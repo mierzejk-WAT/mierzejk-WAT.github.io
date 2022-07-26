@@ -1,0 +1,163 @@
+body, body > div:not(#contents_wrapper) {
+  min-width: 384px; }
+#tileContainer {
+  margin-top: 21px; }
+#btnRefresh, #btnLoad {
+  box-shadow: 0 0 9px 0 rgba(0,0,0,.3); }
+#btnRefresh:hover, #btnLoad:hover {
+  box-shadow: 0 0 9px 1px rgba(0,0,0,.3); }
+.panel-primary {
+  position: relative;
+  background-size: cover !important;
+  background-position: center !important;
+  border-color: #7a7a7a !important;
+  cursor: pointer; }
+.panel-heading {
+  text-align: justify;
+  background-color: rgba(0,0,0,0.22) !important;
+  border-bottom-width: 0;
+  text-shadow: 2px 2px 1px rgba(0, 0, 0, 0.25); }
+.panel-primary:hover {
+  margin: -10px -10px 11px; }
+.panel-primary:hover > .panel-heading {
+  padding-left: 25px;
+  padding-right: 25px;
+  padding-top: 20px; }
+.panel-primary:hover > .panel-footer {
+  padding-left: 25px;
+  padding-right: 25px;
+  padding-bottom: 20px; }
+.panel-primary:hover .video-mark {
+  padding-right: 21px; }
+.panel-primary:hover::before {
+  content: "";
+  position: absolute;
+  left: -1px;
+  right: -1px;
+  top: -1px;
+  bottom: -2px;
+  border: solid #fff;  
+  border-width: 11px 11px 12px;
+  z-index: 1; }
+.panel-primary:hover::after {
+  content: "";
+  position: absolute;
+  left: 9px;
+  right: 9px;
+  top: 9px;
+  bottom: 9px;
+  border-radius: 4px;
+  border: 1px solid #7a7a7a;
+  #box-shadow: 0 1px 1px rgba(0,0,0,0.05);
+  box-shadow: 0 0 9px 1px rgba(0,0,0,.3);
+  z-index: 2; }
+.panel-body {
+  min-height: 120px;
+  position: relative; }
+.panel-body .video-mark {
+  position: absolute;
+  right: 0;
+  top: 0;
+  line-height: 1.3rem;
+  background: rgba(0,0,0,0.22);
+  text-shadow: 2px 2px 1px rgba(0, 0, 0, 0.25);
+  color: #fff;
+  font-size: smaller;
+  padding: 6px 11px;
+  vertical-align: baseline;
+  text-transform: capitalize; }
+.panel-body .video-mark svg {
+  position:absolute;
+  bottom: 0;
+  left: 0;
+  fill: #f5f5f5;
+  opacity: .71; }
+.panel-footer {
+  font-size: smaller;
+  font-style: oblique;
+  background-color: rgba(245,245,245,0.8) !important;
+  border-top-width: 0; }
+.panel-footer #timestamp {
+  font-weight: 600; }
+.btn {
+  height: 46px; }
+.btn.disabled, .btn[disabled] {
+  opacity: inherit !important; }
+.btnRow {
+  padding-left: 15px;
+  padding-right: 15px; }
+.container-fluid {
+  padding-top: 15px;
+  padding-bottom: 15px; }
+#contents {
+  display: none;
+  margin-top: 20px;
+  font-family: Plain, sans-serif;
+  width: 100%; }
+#contents .btn {
+  font-family: Georgia, "Times New Roman", Times, serif; }
+#contents > .articleSpinner {
+  display: block;
+  filter: invert(1);
+  margin: 15px auto; }
+#contents h1:first-of-type {
+  font: 700 30px/38px Decorated, sans-serif !important;
+  margin: 12px 0 14px !important; }
+#contents > h2:first-of-type, #contents div.flexslider .slides h2 {
+  font: 400 17px/26px Plain, sans-serif !important;
+  margin: 1rem 0 1.2rem !important; }
+#contents h3 {
+  color: #777; }
+#contents img:not(.articleSpinner) {
+  display:block;
+  width: 100%;
+  object-fit: contain;
+  max-height: 300px;
+  background: #eee;
+  margin-bottom: 14px;
+  border-radius: 4px; }
+#contents a.flex-next, a.flex-prev {
+  line-height: 1; }
+#contents div.flexslider {
+  background-color: transparent !important;
+  border: 0;  }
+#contents div.flexslider .slides h2 {
+  text-align: center; }
+#videoContainer {
+	height: 320px;
+	padding-top: 0;
+	padding-bottom: 0;
+	background: #eee;
+	margin: 15px 0;
+	border-radius: 4px; }
+#videoContainer video {
+  height: 300px;
+  display: block;
+  margin: 0 auto; }
+#videoContainer #videoDescription {
+	line-height: 20px;
+	font-size: 12px;
+	margin: 0;
+	text-align: center;
+	display: block;
+	white-space: nowrap;
+	overflow: hidden; }
+@media (min-width: 768px) and (max-width: 992px) {
+  #contents {
+    width: 740px; }
+}
+@media (min-width: 992px) and (max-width: 1200px) {
+  #contents {
+    width: 950px; }
+}
+@media (min-width: 1200px) {
+  #contents {
+    width: 950px; }
+  #contents.text {
+    width: 1150px; }
+  .panel-body {
+	min-height: 140px; }
+  #contents div.flexslider ul.slides img {
+    max-height: 360px;
+  }
+}

@@ -1,0 +1,141 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title>WAK -> MFA</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="author" content="Krzysztof Mierzejewski" />
+    <link rel="stylesheet" href="bootstrap.min.css" media="screen">
+    <link rel="stylesheet" href="css/style.min.css" />
+</head>
+<body class="container" style="visibility: hidden;">
+    <div class="row">
+        <div class="col-md-3 col-sm-4">
+            <form class="form-horizontal well" id="mainForm" action="#">
+                <fieldset>
+                    <legend>Parametry</legend>
+                    <div class="form-group">
+                        <label class="col-lg-4 control-label">Zmiennych</label>
+                        <div class="col-lg-8">
+                            <input class="form-control" data-bind="value: VariablesNumber" required placeholder="Zmiennych" value="1" type="number" min="1" step="1" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-lg-4 control-label">Alternatyw</label>
+                        <div class="col-lg-8">
+                            <input class="form-control" data-bind="value: AlternativesNumber" required placeholder="Alternatyw" value="1" type="number" min="1" step="1" />
+                        </div>
+                    </div>
+                    <div class="form-group" style="text-align: right; padding-right: 15px;">
+                            <button type="submit" class="btn btn-primary">Stwórz</button>
+                            <button type="button" disabled class="btn btn-primary" data-bind="enable: Enabled && IsGraph, click: $data.Draw.bind($data)">Rysuj</button>
+                    </div>
+                </fieldset>
+            </form>
+        </div>
+        <div class="col-md-9 col-sm-8">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Macierz B</h3>
+                </div>
+                <div class="panel-body" id="placeholder" data-bind="template: {name: 'grid-template'}"></div>
+            </div>
+        </div>
+    </div>
+    <div class="row" style="display: none" data-bind="visible: IsGraph">
+        <div class="col-md-3 col-sm-4">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Minimalne ZZS</h3>
+                </div>
+                <div class="panel-body bases" id="bases" data-bind="foreach: Formula">
+                    <p data-bind="css: {'alert': true, 'alert-info': !IsCore, 'alert-danger': IsCore}">
+                        <span class="index" data-bind="if: IsCore">jądro</span>
+                        <!-- ko template: {foreach: Variables} -->
+                        <!-- ko if: $index() > 0 -->, <!-- /ko -->
+                        <span data-bind="text: $data"></span>
+                        <!-- /ko -->
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-9 col-sm-8">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Graf</h3>
+                </div>
+                <div id="graph" class="panel-body">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-3 col-md-3 col-lg-3 col-sm-offset-9 col-md-offset-9 col-lg-offset-9" style="text-align: right;">
+            <span class="label label-default">Krzysztof Mierzejewski &#xa9; 2015</span>
+        </div>
+    </div>
+    <script type="text/javascript" src="jquery-git2.min.js"></script>
+	<script type="text/javascript" src="popper.min.js"></script>
+    <script type="text/javascript" src="bootstrap.min.js"></script>
+    <script type="text/javascript" src="knockout-min.js"></script>
+    <script type="text/javascript" src="./Scripts/Sigma/sigma2.min.js"></script>
+    <script id="grid-template" type="text/html">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th />
+                    <!-- ko foreach: Alternatives -->
+                    <th class="index" data-bind="text: Index" />
+                    <!-- /ko -->
+                </tr>
+            </thead>
+            <tbody data-bind="foreach: Variables">
+                <tr>
+                    <th class="vertex">
+                        <span data-bind="text: $data" />
+                    </th>
+                    <!-- ko foreach: $parent.Alternatives -->
+                    <td data-bind="click: function(data, event){this.SwitchVariable(event, $parent, $root);}.bind($data), clickBubble: false">
+                        <span class="glyphicon glyphicon-remove" />
+                    </td>
+                    <!-- /ko -->
+                </tr>
+            </tbody>
+        </table>
+        <h5 data-bind="visible: Visible">Wyrażenie alternatywno-koniunkcyjne</h5>
+        <div id="wak" data-bind="visible: Visible">
+            <span class="fnc" data-bind="component: {name: 'function-header', params: {number: CalculatedVariablesNumber()}}"></span>
+            <!-- ko template: {foreach: $root.Alternatives} -->
+            <!-- ko if: Variables().length > 0 -->
+            <!-- ko if: Variables().length > 1 -->(<!-- /ko -->
+            <!-- ko foreach: Variables -->
+            <!-- ko if: $index() > 0 -->+<!-- /ko -->
+            <span><span class="sub" data-bind="text: $data" /></span>
+            <!-- /ko -->
+            <!-- ko if: Variables().length > 1 -->)<!-- /ko -->
+            <!-- /ko -->
+            <!-- /ko -->
+        </div>
+        <h5 data-bind="visible: Visible">Minimalna formuła alternatywna</h5>
+        <div id="wak" data-bind="visible: Visible">
+            <span class="fnc" data-bind="component: {name: 'function-header', params: {number: CalculatedVariablesNumber()}}"></span>
+            <!-- ko foreach: $root.Formula -->
+            <!-- ko if: $index() > 0 -->+<!-- /ko -->
+            <!-- ko foreach: Variables -->
+            <span><span class="sub" data-bind="text: $data" /></span>
+            <!-- /ko -->
+            <!-- /ko -->
+        </div>
+    </script>
+    <script type="text/javascript" src="base2.obf.js"></script>
+    <script type="text/javascript">
+        $("#mainForm").submit(function (event) {
+            grid.SetVariables();
+            event.returnValue = false;
+            return false;
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,161 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title>Macierz incydencji</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="author" content="Krzysztof Mierzejewski" />
+    <link rel="stylesheet" href="bootstrap.min.css" media="screen">
+    <link rel="stylesheet" href="css/style.min.css" />
+</head>
+<body class="container">
+    <div class="row">
+        <div class="col-md-4 col-sm-6">
+            <form class="form-horizontal well" id="mainForm" action="#">
+                <fieldset>
+                    <legend>Parametry</legend>
+                    <div class="form-group">
+                        <label for="inputEmail" class="col-lg-2 control-label">Węzły</label>
+                        <div class="col-lg-10">
+                            <input class="form-control" id="nodes" required placeholder="Liczba węzłów" value="2" type="number" min="2" step="1" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="inputPassword" class="col-lg-2 control-label">Gałęzie</label>
+                        <div class="col-lg-10">
+                            <input class="form-control" id="links" required placeholder="Liczba gałęzi" value="1" type="number" min="1" step="1" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-lg-10 col-lg-offset-2">
+                            <button type="submit" class="btn btn-primary" id="create">Stwórz</button>
+                            <button type="button" id="compute" disabled class="btn btn-primary">Oblicz</button>
+                        </div>
+                    </div>
+                </fieldset>
+            </form>
+        </div>
+        <div class="col-md-8 col-sm-6">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Binarna macierz incydencji</h3>
+                </div>
+                <div id="placeholder" class="panel-body">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-2 col-sm-3">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Bazy minimalne</h3>
+                </div>
+                <div class="panel-body vectors" id="bases">
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2 col-sm-3">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Maksymalne zws</h3>
+                </div>
+                <div class="panel-body vectors" id="mfa">
+                </div>
+            </div>
+        </div>
+        <div class="col-md-8 col-sm-6">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Macierz B</h3>
+                </div>
+                <div id="colours" class="panel-body">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-2 col-sm-3">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Zbiory A</h3>
+                </div>
+                <div class="panel-body vectors" id="asets">
+                </div>
+            </div>
+        </div>
+        <div class="col-md-10 col-sm-9">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Graf</h3>
+                </div>
+                <div id="graph" class="panel-body">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-2 col-md-2 col-lg-2 col-sm-offset-10 col-md-offset-10 col-lg-offset-10" style="text-align: right;">
+            <span class="label label-default">Krzysztof Mierzejewski &#xa9; 2015</span>
+        </div>
+    </div>
+    <script type="text/javascript" src="jquery-git2.min.js"></script>
+	<script type="text/javascript" src="popper.min.js"></script>
+    <script type="text/javascript" src="bootstrap.min.js"></script>
+    <script type="text/javascript" src="./Scripts/Sigma/sigma.min.js"></script>
+    <script type="text/javascript" src="./Scripts/Colour.js"></script>
+    <script type="text/javascript" src="base.obf.js"></script>
+    <script type="text/javascript">
+        var s = new sigma('graph');
+        s.settings({
+            drawLabels: true,
+            drawEdgeLabels: false,
+            scalingMode: "inside",
+            sideMargin: 0.1,
+            minEdgeSize: 1,
+            maxEdgeSize: 1,
+            minNodeSize: 15,
+            maxNodeSize: 15,
+            touchEnabled: false,
+            mouseEnabled: false,
+            mouseWheelEnabled: false,
+            doubleClickEnabled: false,
+            eventsEnabled: false,
+            enableCamera: false,
+            enableHovering: false,
+            enableEdgeHovering: false,
+            font: "Lato, Helvetica Neue",
+            defaultEdgeColor: "#000"
+        });
+        // Query string
+        var queryString = document.URL.split('?');
+        var parameter = queryString.length === 2 ? decodeURIComponent(queryString[1]) : undefined;
+        var saved, state;
+        if (typeof parameter !== "undefined") {
+            try {
+                eval('saved=' + parameter);
+                state = new Save(saved.n, saved.e);
+            }
+            catch (error) { }
+        }
+        $("#mainForm").submit(function (event) {
+            $('#compute').off('click');
+            $('#compute').attr({ disabled: '' });
+            s.graph.clear();
+            s.refresh();
+            CreateGrid(Number($("#nodes").val()), Number($("#links").val()), "placeholder", "compute", "bases", "mfa", "colours", "asets", s);
+            if (event.preventDefault) event.preventDefault();
+            event.returnValue = false;
+            return false;
+        });
+        if (saved && state.Validate()) {
+            $('#compute').off('click');
+            $('#compute').attr({ disabled: '' });
+            CreateGrid(state.n, state.e.length, "placeholder", "compute", "bases", "mfa", "colours", "asets", s);
+            RestoreGrid(state, $("#nodes"), $("#links"), $("#placeholder"), $("#compute"));
+        }
+    </script>
+</body>
+
+</html>
